@@ -1,42 +1,35 @@
-import React, { useEffect, useState } from 'react'
-import './style.css'
+import React, { useState } from 'react'
+import './style.css';
 
+const App = () => {
+    const [todos, setTodods] = useState([]);
+    const [name, setName] = useState('');
 
-export default function App() {
-    const [datas, setDatas] = useState([]);
-    const [click, setClick] = useState(null);
-
-    useEffect(() => {
-        const fetchCall = async () => {
-            try {
-                const response = await fetch('https://jsonplaceholder.typicode.com/users')
-                const result = await response.json();
-                setDatas(result);
-            }
-            catch (error) {
-                console.log('erro 301: ', error);
-            }
+    const handleSubmit = e => {
+        e.preventDefault();
+        const newTodo = {
+            id: crypto.randomUUID(),
+            name,
         }
-        fetchCall();
-    }, []);
+        setTodods([...todos, newTodo]);
+        setName('');
+    }
 
-    const handleClick = id => setClick(id)
-
+    const handleChange = e => setName(e.target.value);
 
     return (
-        <main className='main-box'>
+        <div>
+            <form onSubmit={handleSubmit} className='style-box'>
+                <input type="text" onChange={handleChange} value={name} />
+                <button>add</button>
+            </form>
             <ul>
-                {datas.map(data => <li key={data.id} onClick={() => handleClick(data)}>{data.name}</li>)}
+                {
+                    todos.map(todo => <li key={todo.id}>{todo.name}</li>)
+                }
             </ul>
-            {click && (
-                <div className='style-box' onClick={() => setClick(null)}>
-                    <h1>{click.name}</h1>
-                    <h4>{click.username}</h4>
-                    <h4>{click.email}</h4>
-                    <h4>{click.phone}</h4>
-                </div>
-            )}
-        </main>
-
+        </div>
     )
 }
+
+export default App;
