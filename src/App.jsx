@@ -1,34 +1,44 @@
 import React, { useState } from 'react'
 import './style.css';
 
-const App = () => {
-    const [todos, setTodods] = useState([]);
-    const [name, setName] = useState('');
 
+function App() {
+    const [todos, setTodos] = useState([]);
+    const [newTask, setNewTask] = useState('');
+
+    const handleChange = event => setNewTask(event.target.value);
     const handleSubmit = e => {
         e.preventDefault();
-        const newTodo = {
-            id: crypto.randomUUID(),
-            name,
-        }
-        setTodods([...todos, newTodo]);
-        setName('');
+        setTodos([...todos, { id: crypto.randomUUID(), newTask, isComplete: false }]);
+        setNewTask('');
     }
-
-    const handleChange = e => setName(e.target.value);
+    const deleteTask = id => setTodos(todos.filter(todo => todo.id !== id));
+    const updateTask = id => setTodos(todos.map(todo => todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo))
 
     return (
-        <div>
-            <form onSubmit={handleSubmit} className='style-box'>
-                <input type="text" onChange={handleChange} value={name} />
-                <button>add</button>
+        <>
+            <form onSubmit={handleSubmit} className='main-box'>
+                <input type="text" value={newTask} onChange={handleChange} required />
+                <button>add task</button>
             </form>
-            <ul>
-                {
-                    todos.map(todo => <li key={todo.id}>{todo.name}</li>)
-                }
-            </ul>
-        </div>
+            {
+                todos.map(todo => {
+                    return (
+                        <div className='line' key={todo.id}
+                            style={todo.isComplete ? { backgroundColor: 'green' } : null}
+                        >
+                            <li style={todo.isComplete ? { textDecoration: 'line-through' } : null}>
+                                {todo.newTask}
+                            </li>
+                            <div>
+                                <span onClick={() => updateTask(todo.id)}>✔</span>
+                                <span onClick={() => deleteTask(todo.id)}>❌</span>
+                            </div>
+                        </div>
+                    )
+                })
+            }
+        </>
     )
 }
 
