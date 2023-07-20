@@ -1,30 +1,35 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useState, useEffect } from 'react'
 
 const App = () => {
-  const [todos, setTodos] = useState([]);
-  const [values, setValues] = useState({ name: '', age: '' });
+  const [datas, setDatas] = useState([]);
+  const [click, setClick] = useState(null);
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    setTodos([...todos, values]);
-    setValues({ name: '', age: '' });
+  const fetchData = () => {
+    try {
+      fetch('https://jsonplaceholder.typicode.com/users')
+        .then(res => res.json())
+        .then(data => setDatas(data))
+    } catch (error) {
+      console.log(error);
+    }
   }
+  const handleClick = id => setClick(id);
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setValues({ ...values, [name]: value, id: crypto.randomUUID() });
-    console.log(name, value);
-  }
+  useEffect(() => {
+    fetchData();
+  }, [])
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name='name' placeholder='nome' value={values.name} onChange={handleChange} />
-        <input type="text" name='age' placeholder='idade' value={values.age} onChange={handleChange} />
-        <button>add</button>
-      </form>
       {
-        todos.map(todo => <li key={todo.id}>{todo.name} tem {todo.age} anos</li>)
+        datas.map(data =>
+          <div key={data.id} onClick={() => handleClick(data.id)}>
+            <h1 style={click === data.id ? { color: 'red' } : null}>{data.name}</h1>
+            <h3>{data.username}</h3>
+            <h3>{data.email}</h3>
+          </div>
+        )
       }
     </>
   )
