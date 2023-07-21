@@ -69,3 +69,19 @@ span {
     width: 800px;
     margin-top: 20px;
 }
+
+div {
+    background-color: #ededed;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-flow: row wrap;
+}
+
+main {
+    background-color: #0b265b;
+    border-radius: 12px;
+    margin: 18px;
+    padding: 32px;
+    color: white;
+}
