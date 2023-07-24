@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react'
+import { useEffect } from 'react';
+import { useState } from 'react'
 
 const App = () => {
   const [datas, setDatas] = useState([]);
-  const [click, setClick] = useState('');
+  const [item, setItem] = useState('');
 
+  const handleChange = e => setItem(e.target.value);
+  const filteredItems = datas.filter(data => data.nome.toLowerCase().includes(item.toLowerCase()));
   const fetchData = () => {
     try {
       fetch('http://files.cod3r.com.br/curso-js/funcionarios.json')
@@ -14,30 +18,27 @@ const App = () => {
     }
   }
 
-  const handleChange = (e) => setClick(e.target.value);
-
   useEffect(() => {
     fetchData();
   }, [])
 
-  const filteredData = datas.filter(data => data.nome.toLowerCase().includes(click.toLowerCase()))
-
   return (
     <>
-      <input type="text" placeholder='search...' value={click} onChange={handleChange} />
-      {filteredData.length === 0 ? (
-        <h1>Sem resultados</h1>
-      ) : (
-        filteredData.map(data =>
+      <input type="text" value={item} onChange={handleChange} placeholder='pesquisar nome...' />
+      {filteredItems.length ?
+        filteredItems.map(data =>
           <main key={data.id}>
-            <h1>Nome: {data.nome} {data.sobrenome}</h1>
-            <h3>Gênero: {data.genero}</h3>
-            <h3>Salário: {data.salario}</h3>
+            <h3>Nome: {data.nome}</h3>
+            <h3>Genero: {data.genero}</h3>
+            <h3>salario: {data.salario}</h3>
           </main>
         )
-      )}
+        :
+        <h1>Não encontrado</h1>
+      }
+
     </>
   )
 }
 
-export default App;
+export default App
