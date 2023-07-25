@@ -1,44 +1,43 @@
 import React from 'react'
-import { useEffect } from 'react';
 import { useState } from 'react'
 
 const App = () => {
-  const [datas, setDatas] = useState([]);
-  const [item, setItem] = useState('');
+  const [todos, setTodos] = useState([]);
+  const [task, setTask] = useState({ name: '', age: '', number: '' });
+  const [click, setClick] = useState(null);
 
-  const handleChange = e => setItem(e.target.value);
-  const filteredItems = datas.filter(data => data.nome.toLowerCase().includes(item.toLowerCase()));
-  const fetchData = () => {
-    try {
-      fetch('http://files.cod3r.com.br/curso-js/funcionarios.json')
-        .then(res => res.json())
-        .then(data => setDatas(data))
-    } catch (error) {
-      console.log(error);
-    }
+  const handleChange = e => {
+    setTask({ ...task, id: crypto.randomUUID(), [e.target.name]: e.target.value });
   }
 
-  useEffect(() => {
-    fetchData();
-  }, [])
+  const handleSubmit = e => {
+    e.preventDefault();
+    setTodos([...todos, task]);
+    setTask({ name: '', age: '', number: '' })
+  }
+
+  const handleClick = id => setClick(id);
 
   return (
     <>
-      <input type="text" value={item} onChange={handleChange} placeholder='pesquisar nome...' />
-      {filteredItems.length ?
-        filteredItems.map(data =>
-          <main key={data.id}>
-            <h3>Nome: {data.nome}</h3>
-            <h3>Genero: {data.genero}</h3>
-            <h3>salario: {data.salario}</h3>
-          </main>
-        )
-        :
-        <h1>Não encontrado</h1>
-      }
-
+      <form onSubmit={handleSubmit}>
+        <input type="text" value={task.name} onChange={handleChange} name='name' placeholder='nome...' />
+        <input type="text" value={task.age} onChange={handleChange} name='age' placeholder='idade...' />
+        <input type="number" value={task.number} onChange={handleChange} name='number' placeholder='numero...' />
+        <button>add</button>
+      </form>
+      <ul>
+        {
+          todos.map(todo => <li
+            key={todo.id}
+            onClick={() => handleClick(todo.id)}
+            style={click === todo.id ? { color: 'red' } : null}>
+            {todo.name} tem {todo.age} anos de idade e seu numero é {todo.number}
+          </li>)
+        }
+      </ul>
     </>
   )
 }
 
-export default App
+export default App;
