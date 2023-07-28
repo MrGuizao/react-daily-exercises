@@ -1,43 +1,47 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react';
 
-const App = () => {
-  const [todos, setTodos] = useState([]);
-  const [task, setTask] = useState({ name: '', age: '', number: '' });
-  const [click, setClick] = useState(null);
+const ListaFiltrada = () => {
+  const listaCompleta = [
+    { id: 1, nome: 'Item 1' },
+    { id: 2, nome: 'Item 2' },
+    { id: 3, nome: 'Item 3' },
+    { id: 4, nome: 'Item 4' },
+    { id: 5, nome: 'Item 5' },
+  ];
 
-  const handleChange = e => {
-    setTask({ ...task, id: crypto.randomUUID(), [e.target.name]: e.target.value });
-  }
+  const [filtro, setFiltro] = useState('todos');
+  const [listaFiltrada, setListaFiltrada] = useState(listaCompleta);
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    setTodos([...todos, task]);
-    setTask({ name: '', age: '', number: '' })
-  }
+  const handleFiltroChange = (e) => {
+    const filtroSelecionado = e.target.value;
+    setFiltro(filtroSelecionado);
 
-  const handleClick = id => setClick(id);
+    if (filtroSelecionado === 'todos') {
+      setListaFiltrada(listaCompleta);
+    } else {
+      const novaListaFiltrada = listaCompleta.filter((item) => item.id === parseInt(filtroSelecionado));
+      setListaFiltrada(novaListaFiltrada);
+    }
+  };
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <input type="text" value={task.name} onChange={handleChange} name='name' placeholder='nome...' />
-        <input type="text" value={task.age} onChange={handleChange} name='age' placeholder='idade...' />
-        <input type="number" value={task.number} onChange={handleChange} name='number' placeholder='numero...' />
-        <button>add</button>
-      </form>
+    <div>
+      <h2>Lista Filtrada</h2>
+      <select value={filtro} onChange={handleFiltroChange}>
+        <option value="todos">Todos</option>
+        <option value="1">Item 1</option>
+        <option value="2">Item 2</option>
+        <option value="3">Item 3</option>
+        <option value="4">Item 4</option>
+        <option value="5">Item 5</option>
+      </select>
       <ul>
-        {
-          todos.map(todo => <li
-            key={todo.id}
-            onClick={() => handleClick(todo.id)}
-            style={click === todo.id ? { color: 'red' } : null}>
-            {todo.name} tem {todo.age} anos de idade e seu numero é {todo.number}
-          </li>)
-        }
+        {listaFiltrada.map((item) => (
+          <li key={item.id}>{item.nome}</li>
+        ))}
       </ul>
-    </>
-  )
-}
+    </div>
+  );
+};
 
-export default App;
+export default ListaFiltrada;
