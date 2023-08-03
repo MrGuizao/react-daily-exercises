@@ -3,22 +3,28 @@ import { useState } from 'react'
 
 const App = () => {
   const [todos, setTodos] = useState([
-    { id: 0, nome: 'guilherme' },
-    { id: 1, nome: 'giovanna' },
-    { id: 2, nome: 'barbara' },
-    { id: 3, nome: 'milena' },
+    { id: 0, nome: 'guilherme', isComplete: false },
+    { id: 1, nome: 'giovanna', isComplete: false },
+    { id: 2, nome: 'barbara', isComplete: false },
+    { id: 3, nome: 'milena', isComplete: false },
   ])
-  const [datas, setDatas] = useState({ nome: '', idade: '' });
-  const [clicked, setClicked] = useState(null)
+  const [datas, setDatas] = useState({ nome: '', idade: '', isComplete: false });
+  const [clicked, setClicked] = useState(null);
+
 
   function handleSubmit(e) {
     e.preventDefault();
     setTodos([...todos, datas]);
-    setDatas({ nome: '', idade: '' });
+    setDatas({ nome: '', idade: '', isComplete: false });
   }
-
   function handleChange(e) {
     setDatas({ ...datas, id: crypto.randomUUID(), [e.target.name]: e.target.value });
+  }
+  function handleDelete(id) {
+    setTodos(todos.filter(todo => todo.id !== id))
+  }
+  function handleUpdate(id) {
+    setTodos(todos.map(todo => id === todo.id ? { ...todo, isComplete: !todo.isComplete } : todo))
   }
 
   return (
@@ -30,17 +36,17 @@ const App = () => {
       </form>
       <ul>
         {
-          todos.map(todo => <li
-            key={todo.id}
-            onClick={() => setClicked(todo.id)}
-            style={todo.id === clicked ? { color: 'red' } : null}
-          >
-            {todo.nome} tem {todo.idade} anos
-          </li>)
+          todos.map(todo => <div
+            style={todo.isComplete ? { textDecoration: 'line-through' } : null}
+            onClick={() => setClicked(todo.id)}>
+            <li key={todo.id}>{todo.nome} tem {todo.idade} anos</li>
+            <span onClick={() => handleUpdate(todo.id)}>✔</span>
+            <span onClick={() => handleDelete(todo.id)}>❌</span>
+          </div>)
         }
       </ul>
     </>
   )
 }
 
-export default App
+export default App;
