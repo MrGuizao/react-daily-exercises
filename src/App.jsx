@@ -2,27 +2,41 @@ import React from 'react'
 import { useState } from 'react'
 
 const App = () => {
-  const [datas, setDatas] = useState([
+  const [todos, setTodos] = useState([
     { id: 0, nome: 'guilherme' },
     { id: 1, nome: 'giovanna' },
     { id: 2, nome: 'barbara' },
     { id: 3, nome: 'milena' },
   ])
-  const [search, setSearch] = useState('');
-  const filteredArray = datas.filter(data => data.nome.toLowerCase().includes(search.toLowerCase()))
+  const [datas, setDatas] = useState({ nome: '', idade: '' });
+  const [clicked, setClicked] = useState(null)
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    setTodos([...todos, datas]);
+    setDatas({ nome: '', idade: '' });
+  }
+
+  function handleChange(e) {
+    setDatas({ ...datas, id: crypto.randomUUID(), [e.target.name]: e.target.value });
+  }
 
   return (
     <>
-      <main>
-        <input type="text" value={search} onChange={(e) => { setSearch(e.target.value) }} />
-      </main>
+      <form onSubmit={handleSubmit}>
+        <input type="text" value={datas.nome} onChange={handleChange} name='nome' placeholder='nome...' />
+        <input type="text" value={datas.idade} onChange={handleChange} name='idade' placeholder='idade...' />
+        <button>add</button>
+      </form>
       <ul>
         {
-          filteredArray ?
-            filteredArray.map(data => <li key={data.id}>{data.nome}</li>)
-            :
-            <h1>sem resultado</h1>
+          todos.map(todo => <li
+            key={todo.id}
+            onClick={() => setClicked(todo.id)}
+            style={todo.id === clicked ? { color: 'red' } : null}
+          >
+            {todo.nome} tem {todo.idade} anos
+          </li>)
         }
       </ul>
     </>
