@@ -5,7 +5,7 @@ const initialState = {
   task: '',
   todos: [],
   address: {
-    street: 'Ricardo de freitas, N. 311'
+    street: 'todos:'
   }
 }
 
@@ -14,6 +14,7 @@ const reducer = (state, action) => {
     case 'text': return { ...state, task: action.payload }
     case 'todo': return { ...state, task: '', todos: [...state.todos, action.payload] }
     case 'change': return { ...state, address: { ...state.address, street: action.payload } }
+    case 'delete': return { ...state, todos: state.todos.filter(todo => todo.id !== action.payload) }
     default: return state;
   }
 }
@@ -23,10 +24,12 @@ const App = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    dispatch({ type: 'todo', payload: task })
+    const newTodo = { id: crypto.randomUUID(), task }
+    dispatch({ type: 'todo', payload: newTodo })
     dispatch({ type: 'change', payload: address.street })
-
   }
+
+  const handleDelete = id => dispatch({ type: 'delete', payload: id })
 
   return (
     <div>
@@ -39,7 +42,7 @@ const App = () => {
 
       <ul>
         {
-          todos.map((todo, index) => <li key={index}>{todo}</li>)
+          todos.map(todo => <li key={todo.id} onClick={() => handleDelete(todo.id)}>{todo.task}</li>)
         }
       </ul>
     </div>
