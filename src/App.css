@@ -1,0 +1,25 @@
+.App {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    /* Para evitar que o Canvas cause uma barra de rolagem vertical */
+}
+
+.left-panel {
+    flex: 1;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+.right-panel {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #d0d0d0;
+}
+
+canvas {
+    width: 100vw;
+    height: 100vh;
+}
